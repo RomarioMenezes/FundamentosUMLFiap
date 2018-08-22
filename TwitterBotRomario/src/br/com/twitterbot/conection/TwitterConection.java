@@ -1,4 +1,4 @@
-package br.com.twitterbot.Conection;
+package br.com.twitterbot.conection;
 
 import br.com.twitterbot.util.TwitterBotProperties;
 import twitter4j.Twitter;

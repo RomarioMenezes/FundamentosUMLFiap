@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import br.com.twitterbot.Conection.TwitterConection;
+import br.com.twitterbot.conection.TwitterConection;
 import br.com.twitterbot.enums.TipoStatus;
 import twitter4j.Query;
 import twitter4j.Status;
