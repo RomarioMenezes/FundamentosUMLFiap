@@ -1,4 +1,4 @@
-package br.com.twitterbotMain;
+package br.com.twitterbot.main;
 
 import br.com.twitterbot.enums.TipoStatus;
 import br.com.twitterbot.interfaces.ImplTwitterBotUtils;
