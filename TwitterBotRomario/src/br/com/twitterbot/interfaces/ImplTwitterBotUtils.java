@@ -8,6 +8,7 @@ import java.util.List;
 import br.com.twitterbot.conection.TwitterConection;
 import br.com.twitterbot.enums.TipoStatus;
 import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
@@ -20,28 +21,44 @@ public class ImplTwitterBotUtils extends TwitterConection implements TwitterBotU
 
 		SimpleDateFormat spf = new SimpleDateFormat("YYYY-MM-dd");
 		Calendar cl = Calendar.getInstance();
-		String data = spf.format(cl.getTime());
+		
 		cl.add(Calendar.WEEK_OF_MONTH, -1);
-		List<String> listData = new ArrayList<>();
+		List<Status> statusList = new ArrayList<>();
 	
-			while (!spf.format(cl.getTime()).equals(data)) {
-					System.out.println("\nDia : " + spf.format(cl.getTime()) + "\n");
-					listData.add(spf.format(cl.getTime()));
-					
-					query.setSince(spf.format(cl.getTime()));
-					tipoStatus.action(getTwitter().search(query));
-					cl.add(Calendar.DAY_OF_YEAR, 1);	
-				}
-			
-			if(tipoStatus.name().equals(TipoStatus.ORDERBYDATE.name())) {
-				System.out.println("\nDATA MAIS ANTIGA DA ULTIMA SEMANA: "+listData.get(0)+"\n");
-				query.setSince(listData.get(0));
-				tipoStatus.action(getTwitter().search(query));
+		QueryResult result = null;
+		query.setSince(spf.format(cl.getTime()));
+		query.setUntil(spf.format(Calendar.getInstance().getTime()));
+		result = getTwitter().search(query);
 				
-				System.out.println("\nDATA MAIS RECENTE DA ULTIMA SEMANA: "+listData.get(listData.size()-1)+"\n");
-				query.setSince(listData.get(listData.size()-1));		
-				tipoStatus.action(getTwitter().search(query));
+		
+			TwitterConection conexao = new TwitterConection();
+			while (result.hasNext())
+			{
+				query = result.nextQuery();
+
+				for (Status status : result.getTweets()) {
+					statusList.add(status);
+				}
+				result = conexao.getTwitter().search(query);
 			}
+			
+
+			System.out.println("\nQuantidade por dia de tweets da última semana\n");
+			TipoStatus.TWITTERS.action(statusList);
+			
+			System.out.println("\nQuantidade por dia de retweets da última semana\n");
+			TipoStatus.RETTWITTERS.action(statusList);
+			
+			System.out.println("\nQuantidade por dia de favoritações da última semana.\n");
+			TipoStatus.FAVORITS.action(statusList);
+		    
+			System.out.println("\nOrdenar os tweets pelo nome do autor, e exibir o primeiro nome e o último nome.\n");
+			TipoStatus.ORDERBYNAME.action(statusList);
+			
+			System.out.println("\nOrdenar os tweets pelo nome do autor, e exibir o primeiro nome e o último nome.\n");
+			TipoStatus.ORDERBYDATE.action(statusList);
+			
+			
 		
 	}
 
